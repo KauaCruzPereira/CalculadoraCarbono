@@ -91,10 +91,10 @@ export default function ChatModal({
     
     Nunca invente valores que não estejam presentes nos dados fornecidos.
     ` + (mathContext ? `\n\nResultado atual do usuário:\n${mathContext}` : "");
-    
+
     try {
       const response = await fetch(
-        "https://solver-equacoes.vercel.app/api/chat",
+        "https://calculadora-carbono-cedup.vercel.app/api/chat",
         {
           method: "POST",
           headers: {
@@ -166,12 +166,6 @@ export default function ChatModal({
               <Text style={styles.closeBtnText}>✕</Text>
             </TouchableOpacity>
           </View>
-
-          {mathContext && (
-            <View style={styles.contextPill}>
-              <Text style={styles.contextText}>Contexto: {mathContext}</Text>
-            </View>
-          )}
 
           <ScrollView
             ref={scrollRef}
