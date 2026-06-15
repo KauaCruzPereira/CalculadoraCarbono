@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { View, Text } from "react-native";
 import { InputField, Btn, SectionCard } from "../components";
 import { CarbonContext } from "../contexts/CarbonContext";
@@ -15,8 +15,6 @@ export const EnergyScreen = () => {
     const emission = calculateEnergy(e, g);
     setEnergy(emission);
   };
-
-  const [success, setSuccess] = useState(false);
 
   return (
     <View>
@@ -39,7 +37,7 @@ export const EnergyScreen = () => {
 
         <Btn label="Calcular" onPress={onCalculate} />
 
-        {typeof energy === "number" && (
+        {energy !== null && (
           <View
             style={{
               borderWidth: 1,
@@ -50,13 +48,8 @@ export const EnergyScreen = () => {
               marginTop: 12,
             }}
           >
-            <Text
-              style={{
-                color: colors.successText,
-                marginBottom: 6,
-              }}
-            >
-              SUCCESSO!
+            <Text style={{ color: colors.successText, marginBottom: 6 }}>
+              SUCESSO!
             </Text>
             <Text style={typography.monoLarge}>
               {energy.toFixed(2)} kg CO₂e

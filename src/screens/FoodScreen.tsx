@@ -55,7 +55,7 @@ export const FoodScreen = () => {
 
         <Btn label="Calcular" onPress={onCalculate} />
 
-        {typeof food === "number" && (
+        {food !== null && (
           <View
             style={{
               borderWidth: 1,
@@ -69,11 +69,10 @@ export const FoodScreen = () => {
             <Text
               style={{
                 color: colors.successText,
-                fontWeight: "700",
                 marginBottom: 6,
               }}
             >
-              SUCCESS!
+              SUCESSO!
             </Text>
             <Text style={typography.monoLarge}>{food.toFixed(2)} kg CO₂e</Text>
           </View>

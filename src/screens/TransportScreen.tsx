@@ -49,7 +49,7 @@ export const TransportScreen = () => {
 
         <Btn label="Calcular" onPress={onCalculate} />
 
-        {typeof transport === "number" && (
+        {transport !== null && (
           <View
             style={{
               borderWidth: 1,
@@ -63,11 +63,10 @@ export const TransportScreen = () => {
             <Text
               style={{
                 color: colors.successText,
-                fontWeight: "700",
                 marginBottom: 6,
               }}
             >
-              SUCCESS!
+              SUCESSO!
             </Text>
             <Text style={typography.monoLarge}>
               {transport.toFixed(2)} kg CO₂e

@@ -3,10 +3,10 @@ import { createContext, useState } from "react";
 export const CarbonContext = createContext({} as any);
 
 export function CarbonProvider({ children }: { children: React.ReactNode }) {
-  const [energy, setEnergy] = useState(0);
-  const [transport, setTransport] = useState(0);
-  const [waste, setWaste] = useState(0);
-  const [food, setFood] = useState(0);
+  const [energy, setEnergy] = useState<number | null>(null);
+  const [transport, setTransport] = useState<number | null>(null);
+  const [waste, setWaste] = useState<number | null>(null);
+  const [food, setFood] = useState<number | null>(null);
 
   const [energyInputs, setEnergyInputs] = useState({
     electricity: "",
@@ -29,13 +29,13 @@ export function CarbonProvider({ children }: { children: React.ReactNode }) {
     recyclingPercent: "",
   });
 
-  const total = energy + transport + waste + food;
+  const total = (energy || 0) + (transport || 0) + (waste || 0) + (food || 0);
 
   const resetAll = () => {
-    setEnergy(0);
-    setTransport(0);
-    setWaste(0);
-    setFood(0);
+    setEnergy(null);
+    setTransport(null);
+    setWaste(null);
+    setFood(null);
 
     setEnergyInputs({ electricity: "", gas: "" });
     setTransportInputs({ gasoline: "", diesel: "", airplaneKm: "" });
