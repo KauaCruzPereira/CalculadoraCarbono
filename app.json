@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "SolverEquacoes",
-    "slug": "SolverEquacoes",
+    "name": "Calculadora Carbono",
+    "slug": "CalculadoraCarbono",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kauacruzpereira.SolverEquacoes",
+      "bundleIdentifier": "com.kauacruzpereira.CalculadoraCarbono",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -21,7 +21,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.kauacruzpereira.SolverEquacoes"
+      "package": "com.kauacruzpereira.CalculadoraCarbono"
     },
     "web": {
       "favicon": "./assets/favicon.png"
