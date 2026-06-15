@@ -1,24 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { View, Text } from "react-native";
 import { InputField, Btn, SectionCard } from "../components";
 import { CarbonContext } from "../contexts/CarbonContext";
 import { calculateTransport } from "../solvers";
-import { typography } from "../theme";
+import { typography, colors } from "../theme";
 
 export const TransportScreen = () => {
-  const { setTransport } = useContext(CarbonContext);
-  const [gasoline, setGasoline] = useState("");
-  const [diesel, setDiesel] = useState("");
-  const [airKm, setAirKm] = useState("");
-  const [last, setLast] = useState<number | null>(null);
+  const { transportInputs, setTransportInputs, setTransport, transport } =
+    useContext(CarbonContext);
 
   const onCalculate = () => {
-    const g = parseFloat(gasoline) || 0;
-    const d = parseFloat(diesel) || 0;
-    const a = parseFloat(airKm) || 0;
+    const g = parseFloat(transportInputs.gasoline) || 0;
+    const d = parseFloat(transportInputs.diesel) || 0;
+    const a = parseFloat(transportInputs.airplaneKm) || 0;
     const emission = calculateTransport(g, d, a);
     setTransport(emission);
-    setLast(emission);
   };
 
   return (
@@ -26,29 +22,57 @@ export const TransportScreen = () => {
       <SectionCard label="Transporte">
         <InputField
           label="Gasolina (litros / mês)"
-          value={gasoline}
-          onChangeText={setGasoline}
+          value={transportInputs.gasoline}
+          onChangeText={(v) =>
+            setTransportInputs({ ...transportInputs, gasoline: v })
+          }
           placeholder="Ex: 40"
         />
 
         <InputField
           label="Diesel (litros / mês)"
-          value={diesel}
-          onChangeText={setDiesel}
+          value={transportInputs.diesel}
+          onChangeText={(v) =>
+            setTransportInputs({ ...transportInputs, diesel: v })
+          }
           placeholder="Ex: 0"
         />
 
         <InputField
           label="Avião (km / ano)"
-          value={airKm}
-          onChangeText={setAirKm}
+          value={transportInputs.airplaneKm}
+          onChangeText={(v) =>
+            setTransportInputs({ ...transportInputs, airplaneKm: v })
+          }
           placeholder="Ex: 1200"
         />
 
         <Btn label="Calcular" onPress={onCalculate} />
 
-        {last !== null && (
-          <Text style={typography.monoLarge}>{last.toFixed(2)} kg CO₂e</Text>
+        {typeof transport === "number" && (
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: colors.successBorder,
+              backgroundColor: colors.successBg,
+              padding: 12,
+              borderRadius: 12,
+              marginTop: 12,
+            }}
+          >
+            <Text
+              style={{
+                color: colors.successText,
+                fontWeight: "700",
+                marginBottom: 6,
+              }}
+            >
+              SUCCESS!
+            </Text>
+            <Text style={typography.monoLarge}>
+              {transport.toFixed(2)} kg CO₂e
+            </Text>
+          </View>
         )}
       </SectionCard>
     </View>
