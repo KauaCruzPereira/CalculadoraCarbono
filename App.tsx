@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Animated,
   Platform,
@@ -11,7 +11,7 @@ import {
 import { colors, radius, spacing, typography } from "./src/theme";
 
 import Sparkles from "./src/assets/svg/sparkles";
-import { CarbonProvider } from "./src/contexts/CarbonContext";
+import { CarbonProvider, CarbonContext } from "./src/contexts/CarbonContext";
 import ChatModal from "./src/screens/ChatModal";
 import { HomeScreen } from "./src/screens/HomeScreen";
 
@@ -101,12 +101,66 @@ export default function App() {
           <Sparkles color="white" />
         </TouchableOpacity>
 
-        <ChatModal
+        <ChatWithContext
           visible={chatVisible}
           onClose={() => setChatVisible(false)}
         />
       </CarbonProvider>
     </View>
+  );
+}
+
+function ChatWithContext({
+  visible,
+  onClose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+}) {
+  const ctx = useContext(CarbonContext);
+
+  if (!ctx) return <ChatModal visible={visible} onClose={onClose} />;
+
+  const {
+    energyInputs,
+    transportInputs,
+    foodInputs,
+    wasteInputs,
+    energy,
+    transport,
+    food,
+    waste,
+    total,
+  } = ctx;
+
+  const fmt = (v: any) =>
+    v === undefined || v === null || v === "" ? "-" : String(v);
+
+  const parts: string[] = [];
+  parts.push("Entradas e resultados do usuário:");
+
+  parts.push(
+    `Energia: Eletricidade=${fmt(energyInputs?.electricity)} kWh, Gás=${fmt(energyInputs?.gas)} kg. Resultado=${energy !== null ? energy.toFixed(2) + " kg CO₂e" : "-"}`,
+  );
+
+  parts.push(
+    `Transporte: Gasolina=${fmt(transportInputs?.gasoline)} L, Diesel=${fmt(transportInputs?.diesel)} L, Avião=${fmt(transportInputs?.airplaneKm)} km. Resultado=${transport !== null ? transport.toFixed(2) + " kg CO₂e" : "-"}`,
+  );
+
+  parts.push(
+    `Alimentação: Carne bovina=${fmt(foodInputs?.beef)} kg, Carne suína=${fmt(foodInputs?.pork)} kg, Frango=${fmt(foodInputs?.chicken)} kg, Laticínios=${fmt(foodInputs?.dairy)}, Vegetais=${fmt(foodInputs?.veg)} kg. Resultado=${food !== null ? food.toFixed(2) + " kg CO₂e" : "-"}`,
+  );
+
+  parts.push(
+    `Resíduos: Resíduos=${fmt(wasteInputs?.wasteKg)} kg, % Reciclado=${fmt(wasteInputs?.recyclingPercent)}%. Resultado=${waste !== null ? waste.toFixed(2) + " kg CO₂e" : "-"}`,
+  );
+
+  parts.push(`Total: ${total.toFixed(2)} kg CO₂e`);
+
+  const mathContext = parts.join("\n");
+
+  return (
+    <ChatModal visible={visible} onClose={onClose} mathContext={mathContext} />
   );
 }
 

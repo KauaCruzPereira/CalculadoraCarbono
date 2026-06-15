@@ -37,7 +37,7 @@ function nowTime() {
 const INITIAL_MSG: Message = {
   id: "0",
   role: "assistant",
-  text: "Olá!, Sou seu assistente de matemática. Pode me perguntar sobre qualquer cálculo feito aqui no app, ou tirar dúvidas sobre matemática em geral!",
+  text: "Olá!, Sou seu assistente de pegada de carbono. Posso ajudar a entender seus resultados, explicar como as emissões são calculadas, dar dicas para reduzir seu impacto ambiental e responder dúvidas sobre energia, transporte, resíduos, alimentação e sustentabilidade.",
   time: nowTime(),
 };
 
@@ -74,17 +74,24 @@ export default function ChatModal({
 
     const systemPrompt =
       `
-  Você é um professor de matemática.
-  
-  Regras:
-  - Responda em português.
-  - Explique passo a passo.
-  - Use exemplos simples.
-  - Não invente respostas.
-  - Mostre os cálculos.
-  - Seja adequado para estudantes.
-  ` + (mathContext ? `\n\nContexto atual do app: ${mathContext}` : "");
-
+    Você é o assistente da Calculadora de Emissões de Carbono.
+    
+    Sua função é:
+    - Explicar os resultados exibidos no aplicativo.
+    - Interpretar os valores calculados.
+    - Comparar emissões entre diferentes atividades.
+    - Responder dúvidas sobre sustentabilidade.
+    - Sugerir ações para reduzir emissões.
+    
+    Ao analisar os dados:
+    1. Identifique as maiores fontes de emissão.
+    2. Explique o impacto de cada categoria.
+    3. Sugira melhorias práticas.
+    4. Use linguagem simples e amigável.
+    
+    Nunca invente valores que não estejam presentes nos dados fornecidos.
+    ` + (mathContext ? `\n\nResultado atual do usuário:\n${mathContext}` : "");
+    
     try {
       const response = await fetch(
         "https://solver-equacoes.vercel.app/api/chat",
