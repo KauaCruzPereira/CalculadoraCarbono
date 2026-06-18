@@ -16,6 +16,7 @@
   "private": true,
   "dependencies": {
     "expo": "^54.0.35",
+    "expo-linear-gradient": "~15.0.8",
     "expo-status-bar": "~3.0.9",
     "lucide-react-native": "^1.18.0",
     "react": "19.1.0",

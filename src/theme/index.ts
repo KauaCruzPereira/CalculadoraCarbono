@@ -2,7 +2,7 @@ export const colors = {
   primary: "#501C2F",
   background: "#F2E8DE",
   card: "#FFFFFF",
-  border: "#E2E8F0",
+  border: "#501c2f52",
   borderStrong: "#CBD5E1",
   textPrimary: "#0F172A",
   textSecondary: "#475569",
@@ -16,7 +16,7 @@ export const colors = {
   errorText: "#991B1B",
   tabActiveBg: "#600324",
   tabActiveText: "#FFFFFF",
-  inputBg: "#F8FAFC",
+  inputBg: "#fcf8f8",
 };
 
 export const spacing = {

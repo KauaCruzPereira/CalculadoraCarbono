@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import {
   Animated,
+  Dimensions,
   Platform,
   StatusBar,
   StyleSheet,
@@ -14,11 +15,22 @@ import Sparkles from "./src/assets/svg/sparkles";
 import { CarbonProvider, CarbonContext } from "./src/contexts/CarbonContext";
 import ChatModal from "./src/screens/ChatModal";
 import { HomeScreen } from "./src/screens/HomeScreen";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function App() {
   const [chatVisible, setChatVisible] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
   const animX = React.useRef(new Animated.Value(40)).current;
+  const [windowWidth, setWindowWidth] = useState(
+    Dimensions.get("window").width,
+  );
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setWindowWidth(window.width);
+    });
+    return () => subscription?.remove();
+  }, []);
 
   useEffect(() => {
     let showTimeout: NodeJS.Timeout | null = null;
@@ -58,21 +70,31 @@ export default function App() {
   }, [animX]);
 
   return (
-    <View style={{ padding: 12, flex: 1, backgroundColor: colors.background }}>
+    <LinearGradient
+      colors={["#F7F1EB", "#EFE5DC", "#E6D8CC"]}
+      style={{ padding: 12, flex: 1 }}
+    >
       <CarbonProvider>
         <StatusBar
           barStyle="dark-content"
           backgroundColor={colors.background}
         />
 
-        <View style={{ marginBottom: 20, gap: 4 }}>
-          <Text style={typography.heading}>Calculadora de Carbono</Text>
-          <Text style={{ fontSize: 15, color: colors.textSecondary }}>
-            Descubra sua pegada de carbono mensal.
-          </Text>
-        </View>
+        <View
+          style={[
+            styles.contentContainer,
+            windowWidth >= 1024 && styles.desktopContentContainer,
+          ]}
+        >
+          <View style={{ marginBottom: 20, gap: 4 }}>
+            <Text style={typography.heading}>Calculadora de Carbono</Text>
+            <Text style={{ fontSize: 15, color: colors.textSecondary }}>
+              Descubra sua pegada de carbono mensal.
+            </Text>
+          </View>
 
-        <HomeScreen />
+          <HomeScreen />
+        </View>
 
         {hintVisible && (
           <Animated.View
@@ -106,7 +128,7 @@ export default function App() {
           onClose={() => setChatVisible(false)}
         />
       </CarbonProvider>
-    </View>
+    </LinearGradient>
   );
 }
 
@@ -169,6 +191,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  contentContainer: {
+    flex: 1,
+  },
+  desktopContentContainer: {
+    alignSelf: "center",
+    maxWidth: 800,
+    width: "100%",
+  },
   header: {
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
@@ -220,7 +250,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
     borderWidth: 3,
-    borderColor: colors.border,
+    borderColor: "white",
   },
   hintBubble: {
     position: "absolute",
