@@ -1,6 +1,6 @@
 export const colors = {
-  primary: "#334E68",
-  background: "#F1F5F9",
+  primary: "#501C2F",
+  background: "#F2E8DE",
   card: "#FFFFFF",
   border: "#E2E8F0",
   borderStrong: "#CBD5E1",
@@ -14,7 +14,7 @@ export const colors = {
   errorBg: "#FEF2F2",
   errorBorder: "#FECACA",
   errorText: "#991B1B",
-  tabActiveBg: "#334E68",
+  tabActiveBg: "#600324",
   tabActiveText: "#FFFFFF",
   inputBg: "#F8FAFC",
 };
