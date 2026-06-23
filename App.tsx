@@ -1,153 +1,27 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Animated,
   Dimensions,
-  Linking,
   Platform,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { colors, radius, spacing, typography } from "./src/theme";
 
+import { LinearGradient } from "expo-linear-gradient";
 import Sparkles from "./src/assets/svg/sparkles";
-import { CarbonProvider, CarbonContext } from "./src/contexts/CarbonContext";
+import { NavigationHeader } from "./src/components/header";
+import { CarbonContext, CarbonProvider } from "./src/contexts/CarbonContext";
 import ChatModal from "./src/screens/ChatModal";
 import { HomeScreen } from "./src/screens/HomeScreen";
-import { LinearGradient } from "expo-linear-gradient";
-
-type NavItem = "biblioteca" | "solverequacoes" | "calculadoracarbono";
-
-const NAV_URLS: Record<NavItem, string> = {
-  biblioteca: "https://biblioteca-do-estudante.vercel.app/",
-  solverequacoes: "https://solver-equacoes.vercel.app/",
-  calculadoracarbono: "https://calculadora-carbono-cedup.vercel.app/",
-};
-
-interface NavigationHeaderProps {
-  activeNav: NavItem;
-  onNavChange: (nav: NavItem) => void;
-}
-
-function NavigationHeader({ activeNav, onNavChange }: NavigationHeaderProps) {
-  const [windowWidth, setWindowWidth] = useState(
-    Dimensions.get("window").width,
-  );
-
-  React.useEffect(() => {
-    const subscription = Dimensions.addEventListener("change", ({ window }) => {
-      setWindowWidth(window.width);
-    });
-    return () => subscription?.remove();
-  }, []);
-
-  const navItems: { id: NavItem; label: string }[] = [
-    { id: "biblioteca", label: "Biblioteca" },
-    { id: "solverequacoes", label: "SolverEquações" },
-    { id: "calculadoracarbono", label: "CalculadoraCarbono" },
-  ];
-
-  const animValues = React.useRef({
-    biblioteca: new Animated.Value(0),
-    solverequacoes: new Animated.Value(0),
-    calculadoracarbono: new Animated.Value(1),
-  }).current;
-
-  React.useEffect(() => {
-    navItems.forEach(({ id }) => {
-      const isActive = activeNav === id;
-      Animated.timing(animValues[id], {
-        toValue: isActive ? 1 : 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start();
-    });
-  }, [activeNav]);
-
-  const isMobile = windowWidth < 768;
-
-  return (
-    <View style={styles.navHeader}>
-      <View
-        style={[
-          styles.navButtonsContainer,
-          isMobile && styles.navButtonsContainerMobile,
-        ]}
-      >
-        {navItems.map(({ id, label }) => {
-          const scale = animValues[id].interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 1.05],
-          });
-
-          const bgOpacity = animValues[id].interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 0.15],
-          });
-
-          const displayLabel = isMobile
-            ? label.split(/(?=[A-Z])/).join("\n")
-            : label;
-
-          return (
-            <Animated.View
-              key={id}
-              style={[
-                {
-                  transform: [{ scale }],
-                  opacity: 1,
-                },
-              ]}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  onNavChange(id);
-                  if (Platform.OS === "web") {
-                    window.location.href = NAV_URLS[id];
-                  } else {
-                    Linking.openURL(NAV_URLS[id]).catch((err) =>
-                      console.error("Failed to open URL:", err),
-                    );
-                  }
-                }}
-                style={[styles.navButton, isMobile && styles.navButtonMobile]}
-                activeOpacity={0.8}
-              >
-                <Animated.View
-                  style={[
-                    styles.navButtonBg,
-                    {
-                      opacity: bgOpacity,
-                    },
-                  ]}
-                />
-                <Text
-                  style={[
-                    styles.navButtonText,
-                    isMobile && styles.navButtonTextMobile,
-                    activeNav === id && styles.navButtonTextActive,
-                  ]}
-                  numberOfLines={isMobile ? 2 : 1}
-                  adjustsFontSizeToFit
-                >
-                  {displayLabel}
-                </Text>
-              </TouchableOpacity>
-            </Animated.View>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
 
 export default function App() {
   const [chatVisible, setChatVisible] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
-  const [activeNav, setActiveNav] = useState<NavItem>("calculadoracarbono");
   const animX = React.useRef(new Animated.Value(40)).current;
   const [windowWidth, setWindowWidth] = useState(
     Dimensions.get("window").width,
@@ -199,7 +73,7 @@ export default function App() {
 
   return (
     <View style={{ flex: 1 }}>
-      <NavigationHeader activeNav={activeNav} onNavChange={setActiveNav} />
+      <NavigationHeader />
       <LinearGradient
         colors={["#F7F1EB", "#EFE5DC", "#E6D8CC"]}
         style={{ flex: 1 }}
