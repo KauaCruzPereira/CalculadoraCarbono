@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { colors, radius, spacing, typography } from "./src/theme";
 
@@ -22,6 +22,7 @@ import { HomeScreen } from "./src/screens/HomeScreen";
 export default function App() {
   const [chatVisible, setChatVisible] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
+  const [usageVisible, setUsageVisible] = useState(false);
   const animX = React.useRef(new Animated.Value(40)).current;
   const [windowWidth, setWindowWidth] = useState(
     Dimensions.get("window").width,
@@ -33,6 +34,8 @@ export default function App() {
     });
     return () => subscription?.remove();
   }, []);
+
+  const isDesktop = windowWidth >= 1024;
 
   useEffect(() => {
     let showTimeout: NodeJS.Timeout | null = null;
@@ -88,18 +91,42 @@ export default function App() {
             <View
               style={[
                 styles.contentContainer,
-                windowWidth >= 1024 && styles.desktopContentContainer,
-                { paddingHorizontal: 12, paddingVertical: 12 },
+                isDesktop && styles.desktopContentContainer,
+                styles.screenPadding,
               ]}
             >
-              <View style={{ marginBottom: 20, gap: 4 }}>
+              {!isDesktop && (
+                <View style={styles.mobileUsageWrapper}>
+                  <TouchableOpacity
+                    onPress={() => setUsageVisible((visible) => !visible)}
+                    style={styles.usageButton}
+                  >
+                    <Text style={styles.usageButtonText}>Como usar?</Text>
+                  </TouchableOpacity>
+
+                  {usageVisible && <UsageGuide />}
+                </View>
+              )}
+
+              <View style={styles.pageHeader}>
                 <Text style={typography.heading}>Calculadora de Carbono</Text>
                 <Text style={{ fontSize: 15, color: colors.textSecondary }}>
                   Descubra sua pegada de carbono mensal.
                 </Text>
               </View>
 
-              <HomeScreen />
+              {isDesktop ? (
+                <View style={styles.desktopCalculatorLayout}>
+                  <View style={styles.calculatorColumn}>
+                    <HomeScreen />
+                  </View>
+                  <View style={styles.usageColumn}>
+                    <UsageGuide />
+                  </View>
+                </View>
+              ) : (
+                <HomeScreen />
+              )}
             </View>
 
             {hintVisible && (
@@ -142,6 +169,135 @@ export default function App() {
   );
 }
 
+function UsageGuide() {
+  const [open, setOpen] = useState<string | null>(null);
+
+  const toggle = (key: string) => {
+    setOpen((prev) => (prev === key ? null : key));
+  };
+
+  return (
+    <View style={styles.usageInfo}>
+      <Text style={styles.usageEyebrow}>Passo a passo</Text>
+
+      <Text style={styles.usageTitle}>Como usar a Calculadora de Carbono</Text>
+
+      <Text style={styles.usageText}>
+        Essa calculadora estima o impacto ambiental das suas atividades do dia a
+        dia. Ela funciona assim: você informa alguns hábitos da sua rotina e o
+        sistema transforma esses dados em uma estimativa de emissão de gases que
+        contribuem para o aquecimento global.
+      </Text>
+
+      <TouchableOpacity onPress={() => toggle("how")}>
+        <Text style={styles.usageStepTitle}>
+          {open === "how" ? "▼" : "▶"} Como funciona
+        </Text>
+      </TouchableOpacity>
+
+      {open === "how" && (
+        <Text style={styles.usageText}>
+          Cada atividade (energia, transporte, alimentação e lixo) tem um peso
+          diferente. A calculadora soma tudo para gerar o impacto mensal.
+        </Text>
+      )}
+      <TouchableOpacity onPress={() => toggle("values")}>
+        <Text style={styles.usageStepTitle}>
+          {open === "values" ? "▼" : "▶"} Como o impacto é calculado
+        </Text>
+      </TouchableOpacity>
+
+      {open === "values" && (
+        <>
+          <Text style={styles.usageText}>
+            Esses são os valores usados como base na conta:
+          </Text>
+          <Text style={styles.usageText}>
+            Energia elétrica: 0,084/kWh{"\n"}
+            Gás: 2,98/kg{"\n"}
+            Gasolina: 2,31/L{"\n"}
+            Diesel: 2,68/L{"\n"}
+            Avião: 0,255/km{"\n"}
+            Carne bovina: 27/kg{"\n"}
+            Carne suína: 12/kg{"\n"}
+            Frango: 6,9/kg{"\n"}
+            Laticínios: 1,9/kg{"\n"}
+            Vegetais: 2,0/kg{"\n"}
+            Lixo: 2,0/kg (com reciclagem)
+          </Text>
+        </>
+      )}
+
+      <TouchableOpacity onPress={() => toggle("energy")}>
+        <Text style={styles.usageStepTitle}>
+          {open === "energy" ? "▼" : "▶"} 1. Energia de casa
+        </Text>
+      </TouchableOpacity>
+
+      {open === "energy" && (
+        <Text style={styles.usageText}>
+          Calcula o impacto da energia elétrica e gás. Quanto maior o consumo,
+          maior a emissão.
+        </Text>
+      )}
+
+      <TouchableOpacity onPress={() => toggle("transport")}>
+        <Text style={styles.usageStepTitle}>
+          {open === "transport" ? "▼" : "▶"} 2. Transporte
+        </Text>
+      </TouchableOpacity>
+
+      {open === "transport" && (
+        <Text style={styles.usageText}>
+          O sistema estima o impacto do combustível usado em carros, motos e
+          aviões. Cada tipo de transporte tem um nível diferente de emissão de
+          poluentes.
+        </Text>
+      )}
+
+      <TouchableOpacity onPress={() => toggle("food")}>
+        <Text style={styles.usageStepTitle}>
+          {open === "food" ? "▼" : "▶"} 3. Alimentação
+        </Text>
+      </TouchableOpacity>
+
+      {open === "food" && (
+        <Text style={styles.usageText}>
+          Os alimentos são convertidos em impacto ambiental de acordo com o tipo
+          de produção. Carnes e laticínios tendem a gerar mais emissões do que
+          vegetais.
+        </Text>
+      )}
+
+      <TouchableOpacity onPress={() => toggle("waste")}>
+        <Text style={styles.usageStepTitle}>
+          {open === "waste" ? "▼" : "▶"} 4. Lixo (resíduos)
+        </Text>
+      </TouchableOpacity>
+
+      {open === "waste" && (
+        <Text style={styles.usageText}>
+          O impacto do lixo é calculado com base na quantidade gerada. Se você
+          recicla parte dele, o impacto final diminui automaticamente.
+        </Text>
+      )}
+
+      <TouchableOpacity onPress={() => toggle("result")}>
+        <Text style={styles.usageStepTitle}>
+          {open === "result" ? "▼" : "▶"} 5. Resultado final
+        </Text>
+      </TouchableOpacity>
+
+      {open === "result" && (
+        <Text style={styles.usageText}>
+          A calculadora junta todos esses impactos (energia + transporte +
+          alimentação + lixo) e mostra uma estimativa total do seu impacto
+          mensal. O botão “Reiniciar” permite refazer tudo com novos valores.
+        </Text>
+      )}
+    </View>
+  );
+}
 function ChatWithContext({
   visible,
   onClose,
@@ -262,9 +418,92 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
   },
+  screenPadding: {
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+  },
+  mobileUsageWrapper: {
+    marginBottom: spacing.md,
+    gap: spacing.xs,
+  },
+  pageHeader: {
+    marginBottom: 20,
+    gap: spacing.xs,
+  },
+  desktopCalculatorLayout: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.lg,
+  },
+  calculatorColumn: {
+    flex: 1,
+    minWidth: 0,
+  },
+  usageColumn: {
+    width: 360,
+    flexShrink: 0,
+  },
+  usageButton: {
+    alignSelf: "stretch",
+    backgroundColor: colors.primary,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    marginBottom: spacing.sm,
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  usageButtonText: {
+    color: colors.tabActiveText,
+    fontSize: 15,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  usageInfo: {
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    padding: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  usageEyebrow: {
+    ...typography.label,
+    color: colors.accent,
+    marginBottom: spacing.xs,
+  },
+  usageTitle: {
+    color: colors.primary,
+    fontSize: 18,
+    fontWeight: "700",
+    marginBottom: spacing.sm,
+  },
+  usageText: {
+    color: colors.textSecondary,
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: spacing.sm,
+  },
+  usageStep: {
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: spacing.sm,
+    marginTop: spacing.xs,
+  },
+  usageStepTitle: {
+    color: colors.textPrimary,
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: spacing.xs,
+  },
   desktopContentContainer: {
     alignSelf: "center",
-    maxWidth: 800,
+    maxWidth: 1180,
     width: "100%",
   },
   header: {
