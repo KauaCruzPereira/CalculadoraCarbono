@@ -13,6 +13,7 @@ const EXTERNAL_URLS = {
   inicio: "https://biblioteca-do-estudante.vercel.app/",
   biblioteca: "https://biblioteca-do-estudante.vercel.app/library",
   atividades: "https://biblioteca-do-estudante.vercel.app/activities",
+  essay: "https://biblioteca-do-estudante.vercel.app/essay",
   solverequacoes: "https://solver-equacoes.vercel.app/",
   calculadoracarbono: "https://calculadora-carbono-cedup.vercel.app/",
 };
@@ -64,8 +65,14 @@ export const NavigationHeader = () => {
     },
     {
       id: "activities",
-      label: "Atividades",
+      label: "Simulados",
       url: EXTERNAL_URLS.atividades,
+      isInternal: false,
+    },
+    {
+      id: "essay",
+      label: "Redação",
+      url: EXTERNAL_URLS.essay,
       isInternal: false,
     },
     {
